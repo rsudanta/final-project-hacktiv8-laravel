@@ -31,16 +31,6 @@ class CategoryController extends Controller
         return ResponseHelper::jsonResponse('success', 'Record created successfully', $category);
     }
 
-    public function getCategoryById($id)
-    {
-        $category = Category::find($id);
-        if (!$category) {
-            return ResponseHelper::jsonResponse('error', "Invalid category ID", null, 400);
-        }
-
-        return ResponseHelper::jsonResponse('success', 'Record retrieved successfully', $category);
-    }
-
     public function updateCategory(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [

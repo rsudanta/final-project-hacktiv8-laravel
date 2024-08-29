@@ -18,8 +18,6 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->integer('quantity');
             $table->integer('total_price');
-            $table->string('customer_name');
-            $table->text('customer_address');
             $table->timestamp('order_date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
         });

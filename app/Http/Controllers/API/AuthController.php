@@ -32,9 +32,7 @@ class AuthController extends Controller
         }
         $data = [
             'user' => auth()->user(),
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL()
+            'token' => $token,
         ];
         return ResponseHelper::jsonResponse('success', 'Successfully logged in', $data);
     }
@@ -45,6 +43,7 @@ class AuthController extends Controller
             'name' => "required|string",
             'email' => "required|email|unique:users",
             'password' => "required|string|confirmed|min:6",
+            'address' => "required|string",
         ]);
 
         if ($validator->fails()) {
@@ -55,7 +54,8 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'address' => $request->address,
         ]);
 
         return ResponseHelper::jsonResponse('success', 'Successfully Registered', $user);

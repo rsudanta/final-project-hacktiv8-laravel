@@ -10,22 +10,9 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    public function getProduct(Request $request)
+    public function getProduct()
     {
-        $product = [];
-        $category_id = $request->query('category_id');
-
-        if ($category_id) {
-            $product = Product::where('category_id', $category_id)
-                ->get();
-        } else {
-            $product = Product::all();
-        }
-
-        if (count($product) == 0) {
-            return ResponseHelper::jsonResponse('error', "Invalid category ID", null, 400);
-        }
-
+        $product = Product::all();
         return ResponseHelper::jsonResponse('success', 'Record retrieved successfully', $product);
     }
 
@@ -45,17 +32,6 @@ class ProductController extends Controller
         $product = Product::create($request->all());
         return ResponseHelper::jsonResponse('success', 'Record created successfully', $product);
     }
-
-    public function getProductById($id)
-    {
-        $product = Product::find($id);
-        if (!$product) {
-            return ResponseHelper::jsonResponse('error', "Invalid product ID", null, 400);
-        }
-
-        return ResponseHelper::jsonResponse('success', 'Record retrieved successfully', $product);
-    }
-
 
     public function updateProduct(Request $request, string $id)
     {
