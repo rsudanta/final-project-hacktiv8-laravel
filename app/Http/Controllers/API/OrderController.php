@@ -21,7 +21,7 @@ class OrderController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|numeric',
+            'quantity' => 'required|numeric|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -47,7 +47,7 @@ class OrderController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'exists:products,id',
-            'quantity' => 'numeric',
+            'quantity' => 'numeric|min:1',
         ]);
 
         if ($validator->fails()) {

@@ -20,7 +20,7 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'price' => 'numeric|required',
+            'price' => 'numeric|required|min:1',
             'category_id' => 'required|exists:categories,id'
         ]);
 
@@ -37,7 +37,7 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'string',
-            'price' => 'numeric',
+            'price' => 'numeric|min:1',
             'category_id' => 'exists:categories,id'
         ]);
 
