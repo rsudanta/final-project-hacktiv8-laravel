@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -86,8 +87,10 @@ class OrderController extends Controller
 
     public function getReport()
     {
-        $order = Order::select("orders.*", "name as customer_name" ,"address as customer_address")
+        $order = Order::select("orders.id", "p.name as product_name", "c.name as category_name", "quantity", "total_price", "u.name as customer_name", "address as customer_address", "order_date")
             ->leftJoin('users as u', 'u.id', 'orders.user_id')
+            ->leftJoin('products as p', 'p.id', 'orders.product_id')
+            ->leftJoin('categories as c', 'p.category_id', 'c.id')
             ->get()
             ->toArray();
         $totalRevenue = array_sum(array_column($order, 'total_price'));
