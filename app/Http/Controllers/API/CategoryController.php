@@ -12,14 +12,14 @@ class CategoryController extends Controller
 {
     public function getCategory()
     {
-        $category = Category::all();
-        return ResponseHelper::jsonResponse('success', 'Record retrieved successfully', $category);
+        $categories = Category::all();
+        return ResponseHelper::jsonResponse('success', 'Record retrieved successfully', $categories);
     }
 
     public function storeCategory(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => "required|string",
+            'name' => "required|string|unique:categories",
         ]);
 
         if ($validator->fails()) {
@@ -34,7 +34,7 @@ class CategoryController extends Controller
     public function updateCategory(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => "required|string",
+            'name' => "required|string|unique:categories",
         ]);
 
         if ($validator->fails()) {
@@ -53,9 +53,15 @@ class CategoryController extends Controller
     public function destroyCategory(string $id)
     {
         $category = Category::find($id);
+
         if (!$category) {
             return ResponseHelper::jsonResponse('error', "Invalid category ID", null, 400);
         }
+
+        if ($category && $category->products()->exists()) {
+            return ResponseHelper::jsonResponse('error', "This category cannot be deleted because it is still referenced by products.", null, 400);
+        }
+
         $category->delete();
         return ResponseHelper::jsonResponse('success', 'Record deleted successfully');
     }

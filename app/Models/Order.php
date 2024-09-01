@@ -9,8 +9,15 @@ class Order extends Model
 {
     use HasFactory;
     protected $fillable = ['user_id', 'order_date', 'product_id', 'quantity', 'total_price', 'customer_name', 'customer_address'];
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
+
+    public function category()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
+

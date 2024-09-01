@@ -14,8 +14,10 @@ class OrderController extends Controller
 {
     function getOrder()
     {
-        $order = Order::where('user_id', auth()->user()->id)->get();
-        return ResponseHelper::jsonResponse('success', 'Record retrieved successfully', $order);
+        $orders = Order::select('orders.id', 'product_id', 'quantity', 'total_price', 'u.name as customer_name', 'u.address as customer_address', 'order_date', 'orders.created_at', 'orders.updated_at')
+            ->leftJoin('users as u', 'u.id', 'orders.user_id')
+            ->where('user_id', auth()->user()->id)->get();
+        return ResponseHelper::jsonResponse('success', 'Record retrieved successfully', $orders);
     }
 
     function storeOrder(Request $request)
@@ -41,7 +43,11 @@ class OrderController extends Controller
         ];
 
         $order = Order::create($insertData);
-        return ResponseHelper::jsonResponse('success', 'Record created successfully', $order);
+        $orderData = $order->toArray();
+        $orderData['customer_name'] = $order->user->name;
+        $orderData['customer_address'] = $order->user->address;
+
+        return ResponseHelper::jsonResponse('success', 'Record created successfully', $orderData);
     }
 
     function updateOrder(Request $request, $id)
@@ -72,7 +78,10 @@ class OrderController extends Controller
         ];
 
         $order->update($updateData);
-        return ResponseHelper::jsonResponse('success', 'Record created successfully', $order);
+        $orderData = $order->toArray();
+        $orderData['customer_name'] = $order->user->name;
+        $orderData['customer_address'] = $order->user->address;
+        return ResponseHelper::jsonResponse('success', 'Record created successfully', $orderData);
     }
 
     public function destroyOrder(string $id)

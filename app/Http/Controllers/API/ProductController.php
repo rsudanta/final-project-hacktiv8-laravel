@@ -12,8 +12,8 @@ class ProductController extends Controller
 {
     public function getProduct()
     {
-        $product = Product::all();
-        return ResponseHelper::jsonResponse('success', 'Record retrieved successfully', $product);
+        $products = Product::all();
+        return ResponseHelper::jsonResponse('success', 'Record retrieved successfully', $products);
     }
 
     public function storeProduct(Request $request)
@@ -57,6 +57,11 @@ class ProductController extends Controller
     public function destroyProduct(string $id)
     {
         $product = Product::find($id);
+
+        if ($product && $product->orders()->exists()) {
+            return ResponseHelper::jsonResponse('error', "This product cannot be deleted because it is still referenced by orders.", null, 400);
+        }
+
         if (!$product) {
             return ResponseHelper::jsonResponse('error', "Invalid Product ID", null, 400);
         }
